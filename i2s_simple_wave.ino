@@ -14,20 +14,19 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("started");
-  I2SPlayer* player = new I2SPlayer();
+  I2SPlayer* player = new I2SPlayer(new MP3BufferDecoder(sound, (int) sizeof(sound)));
   Serial.println("I2SPlayer");
-  MP3BufferDecoder* decoder = new MP3BufferDecoder();
+
   Serial.println("Decoder");
   player->begin(PIN_SDOUT, PIN_SCK, PIN_LRCK);
   Serial.println("begin");
-  //  player->setVolume(0.01);
+  player->setVolume(0.1);
   for (int i = 0; i < 3; i++) {
-    decoder->init(sound, (int) sizeof(sound));
-    player->init(decoder);
+    player->decoder()->rewind();
+    player->start();
     while (player -> loop());
     delay(2000);
   }
-  delete(decoder);
   delete(player);
 }
 

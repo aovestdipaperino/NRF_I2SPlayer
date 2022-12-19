@@ -27,7 +27,7 @@ void I2SPlayer::fillBuffer() {
   int16_t* ptr = fillBufferOne ? &bufferOne[0] : &bufferTwo[0];
 
   fillBufferOne = !fillBufferOne;
-  decodedBytes = decoder->fillBuffer(ptr, 0);
+  decodedBytes = _decoder->fillBuffer(ptr, 0);
   if (volume != 1.0) {
     for (int i = 0; i < FRAME_SAMPLES; i++) {
       ptr[i] = (int16_t)(((double)ptr[i]) * volume);
@@ -35,11 +35,10 @@ void I2SPlayer::fillBuffer() {
   }
 }
 
-void I2SPlayer::init(Decoder *aDecoder) {
+void I2SPlayer::start() {
   NRF_I2S->RXTXD.MAXCNT = FRAME_SAMPLES / 2;
   NRF_I2S->EVENTS_TXPTRUPD = 0;
   NRF_I2S->ENABLE = 1;
-  this->decoder = aDecoder;
   fillBuffer();
 
   NRF_I2S->TXD.PTR =  (uint32_t) &bufferOne[0];
