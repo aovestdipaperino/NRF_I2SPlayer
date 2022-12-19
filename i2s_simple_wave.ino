@@ -1,5 +1,5 @@
 #include <nrf.h>
-#include "sine.h"
+#include "shot.h"
 #include "I2SPlayer.h"
 
 // properly destruct the decoder

@@ -54,7 +54,6 @@ boolean I2SPlayer::loop() {
       NRF_I2S->TXD.PTR = (uint32_t)(!fillBufferOne ? &bufferTwo[0] : &bufferOne[0]);
       NRF_I2S->EVENTS_TXPTRUPD = 0;
       fillBuffer();
-      Serial.println(".");
     }
     return true;
   }
