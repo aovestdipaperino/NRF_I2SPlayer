@@ -1,4 +1,4 @@
-#include "NRFBufferPlayer.h"
+#include "I2SPlayer.h"
 #include "mp3_decoder.h"
 
 void MP3BufferDecoder::init(const unsigned char* anInputBuffer, int aTotalSize) {

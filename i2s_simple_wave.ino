@@ -2,7 +2,6 @@
 #include "sine.h"
 #include "I2SPlayer.h"
 
-// TODO: rename NRFBufferPlayer -> I2SPlayer
 // properly destruct the decoder
 // better double buffering naming. e.g. bufferToPlay, bufferToFill
 // map pin
