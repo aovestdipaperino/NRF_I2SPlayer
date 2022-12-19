@@ -2,6 +2,7 @@
 #include "mp3_decoder.h"
 
 void MP3BufferDecoder::init(const unsigned char* anInputBuffer, int aTotalSize) {
+  MP3Decoder_AllocateBuffers();
   bytesRemaining = aTotalSize;
   inputBuffer = anInputBuffer;
   auto offset = MP3FindSyncWord((unsigned char *)anInputBuffer, bytesRemaining);

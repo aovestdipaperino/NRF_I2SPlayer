@@ -23,6 +23,7 @@ void I2SPlayer::begin(uint8_t pinSDOUT, uint8_t pinSCK, uint8_t pinLRCK) {
 }
 
 void I2SPlayer::fillBuffer() {
+  Serial.println("+");
   int16_t* ptr = fillBufferOne ? &bufferOne[0] : &bufferTwo[0];
 
   fillBufferOne = !fillBufferOne;
@@ -43,7 +44,6 @@ void I2SPlayer::init(Decoder *aDecoder) {
 
   NRF_I2S->TXD.PTR =  (uint32_t) &bufferOne[0];
   NRF_I2S->EVENTS_TXPTRUPD = 0;
-  NRF_I2S->TASKS_STOP = 0;
   NRF_I2S->ENABLE = 1;
   NRF_I2S->TASKS_START = 1;
 }
@@ -54,6 +54,7 @@ boolean I2SPlayer::loop() {
       NRF_I2S->TXD.PTR = (uint32_t)(!fillBufferOne ? &bufferTwo[0] : &bufferOne[0]);
       NRF_I2S->EVENTS_TXPTRUPD = 0;
       fillBuffer();
+      Serial.println(".");
     }
     return true;
   }
