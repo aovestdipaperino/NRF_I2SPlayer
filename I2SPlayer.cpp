@@ -23,7 +23,6 @@ void I2SPlayer::begin(uint8_t pinSDOUT, uint8_t pinSCK, uint8_t pinLRCK) {
 }
 
 void I2SPlayer::fillBuffer() {
-  Serial.println("+");
   int16_t* ptr = fillBufferOne ? &bufferOne[0] : &bufferTwo[0];
 
   fillBufferOne = !fillBufferOne;

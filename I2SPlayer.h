@@ -16,9 +16,7 @@ private:
 public:
   MP3BufferDecoder(const unsigned char* anInputBuffer, int aTotalSize);
   virtual uint16_t fillBuffer(int16_t* buffer, uint16_t size);
-  virtual void rewind() {
-    bytesRemaining = totalSize;
-  }
+  virtual void rewind();
 };
 
 class I2SPlayer {
