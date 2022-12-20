@@ -5,7 +5,7 @@
 class Decoder {
 public:
   virtual uint16_t fillBuffer(int16_t* buffer, uint16_t size) = 0;
-  virtual void rewind();
+  virtual void rewind() = 0;
 };
 
 class MP3BufferDecoder : public Decoder {
@@ -33,7 +33,9 @@ public:
   I2SPlayer(Decoder* aDecoder)
     : _decoder(aDecoder) {}
   void begin(uint8_t pinSDOUT, uint8_t pinSCK, uint8_t pinLRCK);
-  void start();
+  void play();
+  void pause();
+  void stop();
   boolean loop();
   void setVolume(float value);
   Decoder* decoder() {

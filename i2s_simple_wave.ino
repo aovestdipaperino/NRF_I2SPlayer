@@ -18,8 +18,7 @@ void setup()
   player->begin(PIN_SDOUT, PIN_SCK, PIN_LRCK);
   //player->setVolume(0.1);
   for (int i = 0; i < 4; i++) {
-    player->decoder()->rewind();
-    player->start();
+    player->play();
     while (player -> loop());
     delay(2000);
   }

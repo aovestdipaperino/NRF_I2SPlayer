@@ -34,7 +34,7 @@ void I2SPlayer::fillBuffer() {
   }
 }
 
-void I2SPlayer::start() {
+void I2SPlayer::play() {
   NRF_I2S->RXTXD.MAXCNT = FRAME_SAMPLES / 2;
   NRF_I2S->EVENTS_TXPTRUPD = 0;
   NRF_I2S->ENABLE = 1;
@@ -46,6 +46,15 @@ void I2SPlayer::start() {
   NRF_I2S->TASKS_START = 1;
 }
 
+void I2SPlayer::pause() {
+  NRF_I2S->TASKS_STOP = 1;
+}
+
+void I2SPlayer::stop() {
+  pause();
+  _decoder->rewind();
+}
+
 boolean I2SPlayer::loop() {
   if (decodedBytes) {
     if (NRF_I2S->EVENTS_TXPTRUPD) {
@@ -55,9 +64,11 @@ boolean I2SPlayer::loop() {
     }
     return true;
   }
-  NRF_I2S->TASKS_STOP = 1;
+  stop();
   return false;
 }
+
+
 
 void I2SPlayer::setVolume(float value) {
   if (value >= 0 && value <= 10) {
