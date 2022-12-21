@@ -13,10 +13,15 @@ MP3BufferDecoder::MP3BufferDecoder(const unsigned char* anInputBuffer, int aTota
   rewind();
 }
 
-uint16_t MP3BufferDecoder::fillBuffer(int16_t* buffer, uint16_t size) {
+uint16_t MP3BufferDecoder::fillBuffer(int16_t* buffer, uint16_t size, uint16_t* bufferSampleRate = 0) {
   if (bytesRemaining <= 0) return 0;
   int previousBytes = bytesRemaining;
+  memset(buffer, 0, FRAME_SAMPLES * CHNLS);
   auto res = MP3Decode((unsigned char*) inputBuffer + (totalSize - bytesRemaining), &bytesRemaining, buffer, 0);
+  if (bufferSampleRate) {
+      *bufferSampleRate = MP3GetSampRate();
+  }
+
   if (res) {
     return 0;
   }

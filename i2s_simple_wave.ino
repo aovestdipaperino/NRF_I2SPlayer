@@ -3,7 +3,6 @@
 #include "I2SPlayer.h"
 
 // properly destruct the decoder
-// better double buffering naming. e.g. bufferToPlay, bufferToFill
 // map pin
 
 #define PIN_SDOUT  (44)
@@ -16,8 +15,8 @@ void setup()
   while(!Serial) delay(10);
   I2SPlayer* player = new I2SPlayer(new MP3BufferDecoder(sound, (int) sizeof(sound)));
   player->begin(PIN_SDOUT, PIN_SCK, PIN_LRCK);
-  //player->setVolume(0.1);
-  for (int i = 0; i < 4; i++) {
+  player->setVolume(0.5);
+  for (int i = 0; i < 3; i++) {
     player->play();
     while (player -> loop());
     delay(2000);
