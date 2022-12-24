@@ -5,9 +5,9 @@ void MP3BufferDecoder::rewind() {
   bytesRemaining = totalSize - MP3FindSyncWord((unsigned char *)inputBuffer, totalSize);
 }
 
-MP3BufferDecoder::MP3BufferDecoder(const unsigned char* anInputBuffer, int aTotalSize) {
+MP3BufferDecoder::MP3BufferDecoder(const unsigned char* anInputBuffer, int aTotalSize, unsigned char* buffer) {
   // BUG: this will need to be guarded by a static.
-  MP3Decoder_AllocateBuffers();
+  MP3Decoder_AllocateBuffers(buffer);
   totalSize = aTotalSize;
   inputBuffer = anInputBuffer;
   rewind();

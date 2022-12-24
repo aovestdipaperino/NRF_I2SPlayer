@@ -455,7 +455,7 @@ const uint32_t csa[8][2] PROGMEM = {
  */
 
 // prototypes
-bool MP3Decoder_AllocateBuffers(void);
+bool MP3Decoder_AllocateBuffers(unsigned char* buffer = 0);
 void MP3Decoder_FreeBuffers();
 int  MP3Decode( unsigned char *inbuf, int *bytesLeft, short *outbuf, int useSize);
 void MP3GetLastFrameInfo();

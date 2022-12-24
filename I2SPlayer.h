@@ -14,7 +14,7 @@ private:
   int bytesRemaining;
   const unsigned char* inputBuffer;
 public:
-  MP3BufferDecoder(const unsigned char* anInputBuffer, int aTotalSize);
+  MP3BufferDecoder(const unsigned char* anInputBuffer, int aTotalSize, unsigned char* buffer = 0);
   virtual uint16_t fillBuffer(int16_t* buffer, uint16_t size, uint16_t* bufferSampleRate);
   virtual void rewind();
 };

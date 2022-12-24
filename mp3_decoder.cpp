@@ -1,10 +1,10 @@
 /*
- * mp3_decoder.cpp
- * libhelix_HMP3DECODER in https://github.com/schreibfaul1/ESP32-audioI2S
- *
- *  Created on: 26.10.2018
- *  Updated on: 27.05.2022
- */
+   mp3_decoder.cpp
+   libhelix_HMP3DECODER in https://github.com/schreibfaul1/ESP32-audioI2S
+
+    Created on: 26.10.2018
+    Updated on: 27.05.2022
+*/
 #include "mp3_decoder.h"
 /* clip to range [-2^n, 2^n - 1] */
 #if 0  //Fast on ARM:
@@ -4715,17 +4715,17 @@ const uint32_t polyCoef[264] PROGMEM = {
 };
 
 /* format = Q30, range = [0.0981, 1.9976]
- *
- * n = 16;
- * k = 0;
- * for(i=0; i<5; i++, n=n/2) {
- *   for(p=0; p<n; p++, k++) {
- *     t = (PI / (4*n)) * (2*p + 1);
- *     coef32[k] = 2.0 * cos(t);
- *   }
- * }
- * coef32[30] *= 0.5;   / *** for initial back butterfly (i.e. two-point DCT) *** /
- */
+
+   n = 16;
+   k = 0;
+   for(i=0; i<5; i++, n=n/2) {
+     for(p=0; p<n; p++, k++) {
+       t = (PI / (4*n)) * (2*p + 1);
+       coef32[k] = 2.0 * cos(t);
+     }
+   }
+   coef32[30] *= 0.5;   / *** for initial back butterfly (i.e. two-point DCT) *** /
+*/
 const int coef32[31] PROGMEM = {
   0x7fd8878d,
   0x7e9d55fc,
@@ -4761,10 +4761,10 @@ const int coef32[31] PROGMEM = {
 };
 
 /* let c(j) = cos(M_PI/36 * ((j)+0.5)), s(j) = sin(M_PI/36 * ((j)+0.5))
- * then fastWin[2*j+0] = c(j)*(s(j) + c(j)), j = [0, 8]
- *      fastWin[2*j+1] = c(j)*(s(j) - c(j))
- * format = Q30
- */
+   then fastWin[2*j+0] = c(j)*(s(j) + c(j)), j = [0, 8]
+        fastWin[2*j+1] = c(j)*(s(j) - c(j))
+   format = Q30
+*/
 const uint32_t fastWin36[18] PROGMEM = {
   0x42aace8b, 0xc2e92724, 0x47311c28, 0xc95f619a, 0x4a868feb, 0xd0859d8c,
   0x4c913b51, 0xd8243ea0, 0x4d413ccc, 0xe0000000, 0x4c913b51, 0xe7dbc161,
@@ -4772,10 +4772,10 @@ const uint32_t fastWin36[18] PROGMEM = {
 };
 
 /* tables for quadruples
- * format 0xAB
- *  A = length of codeword
- *  B = codeword
- */
+   format 0xAB
+    A = length of codeword
+    B = codeword
+*/
 const unsigned char quadTable[64 + 16] PROGMEM = {
   /* table A */
   0x6b,
@@ -4862,10 +4862,10 @@ const unsigned char quadTable[64 + 16] PROGMEM = {
 };
 
 /* indexing = [version][layer][bitrate index]
- * bitrate (kbps) of frame
- *   - bitrate index == 0 is "free" mode (bitrate determined on the fly by
- *       counting bits between successive sync words)
- */
+   bitrate (kbps) of frame
+     - bitrate index == 0 is "free" mode (bitrate determined on the fly by
+         counting bits between successive sync words)
+*/
 const short bitrateTab[3][3][15] PROGMEM = {
   {
     /* MPEG-1 */
@@ -4888,9 +4888,9 @@ const short bitrateTab[3][3][15] PROGMEM = {
 };
 
 /* indexing = [version][sampleRate][bitRate]
- * for layer3, nSlots = floor(samps/frame * bitRate / sampleRate / 8)
- *   - add one pad slot if necessary
- */
+   for layer3, nSlots = floor(samps/frame * bitRate / sampleRate / 8)
+     - add one pad slot if necessary
+*/
 const short slotTab[3][3][15] PROGMEM = {
   {
     /* MPEG-1 */
@@ -4917,22 +4917,26 @@ const uint32_t imdctWin[4][36] PROGMEM = {
     0x02aace8b, 0xfd16d8dd, 0xf6a09e66, 0xef7a6275, 0xe7dbc161, 0xe0000000, 0xd8243e9f, 0xd0859d8b,
     0xc95f619a, 0xc2e92723, 0xbd553175, 0xb8cee3d8, 0xb5797014, 0xb36ec4ae, 0xb2bec333, 0xb36ec4ae,
     0xb5797014, 0xb8cee3d8, 0xbd553175, 0xc2e92723, 0xc95f619a, 0xd0859d8b, 0xd8243e9f, 0xe0000000,
-    0xe7dbc161, 0xef7a6275, 0xf6a09e66, 0xfd16d8dd },
+    0xe7dbc161, 0xef7a6275, 0xf6a09e66, 0xfd16d8dd
+  },
   { 0x02aace8b, 0x07311c28, 0x0a868fec, 0x0c913b52, 0x0d413ccd, 0x0c913b52, 0x0a868fec, 0x07311c28,
     0x02aace8b, 0xfd16d8dd, 0xf6a09e66, 0xef7a6275, 0xe7dbc161, 0xe0000000, 0xd8243e9f, 0xd0859d8b,
     0xc95f619a, 0xc2e92723, 0xbd44ef14, 0xb831a052, 0xb3aa3837, 0xafb789a4, 0xac6145bb, 0xa9adecdc,
     0xa864491f, 0xad1868f0, 0xb8431f49, 0xc8f42236, 0xdda8e6b1, 0xf47755dc, 0x00000000, 0x00000000,
-    0x00000000, 0x00000000, 0x00000000, 0x00000000 },
+    0x00000000, 0x00000000, 0x00000000, 0x00000000
+  },
   { 0x07311c28, 0x0d413ccd, 0x07311c28, 0xf6a09e66, 0xe0000000, 0xc95f619a, 0xb8cee3d8, 0xb2bec333,
     0xb8cee3d8, 0xc95f619a, 0xe0000000, 0xf6a09e66, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-    0x00000000, 0x00000000, 0x00000000, 0x00000000 },
+    0x00000000, 0x00000000, 0x00000000, 0x00000000
+  },
   { 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x028e9709, 0x04855ec0,
     0x026743a1, 0xfcde2c10, 0xf515dc82, 0xec93e53b, 0xe4c880f8, 0xdd5d0b08, 0xd63510b7, 0xcf5e834a,
     0xc8e6b562, 0xc2da4105, 0xbd553175, 0xb8cee3d8, 0xb5797014, 0xb36ec4ae, 0xb2bec333, 0xb36ec4ae,
     0xb5797014, 0xb8cee3d8, 0xbd553175, 0xc2e92723, 0xc95f619a, 0xd0859d8b, 0xd8243e9f, 0xe0000000,
-    0xe7dbc161, 0xef7a6275, 0xf6a09e66, 0xfd16d8dd },
+    0xe7dbc161, 0xef7a6275, 0xf6a09e66, 0xfd16d8dd
+  },
 };
 
 const int ISFMpeg1[2][7] PROGMEM = {
@@ -4944,17 +4948,22 @@ const int ISFMpeg2[2][2][16] PROGMEM = {
   {
     { /* intensityScale off, mid-side off */
       0x40000000, 0x35d13f32, 0x2d413ccc, 0x260dfc14, 0x1fffffff, 0x1ae89f99, 0x16a09e66, 0x1306fe0a,
-      0x0fffffff, 0x0d744fcc, 0x0b504f33, 0x09837f05, 0x07ffffff, 0x06ba27e6, 0x05a82799, 0x04c1bf82 },
+      0x0fffffff, 0x0d744fcc, 0x0b504f33, 0x09837f05, 0x07ffffff, 0x06ba27e6, 0x05a82799, 0x04c1bf82
+    },
     { /* intensityScale off, mid-side on */
       0x5a827999, 0x4c1bf827, 0x3fffffff, 0x35d13f32, 0x2d413ccc, 0x260dfc13, 0x1fffffff, 0x1ae89f99,
-      0x16a09e66, 0x1306fe09, 0x0fffffff, 0x0d744fcc, 0x0b504f33, 0x09837f04, 0x07ffffff, 0x06ba27e6 },
+      0x16a09e66, 0x1306fe09, 0x0fffffff, 0x0d744fcc, 0x0b504f33, 0x09837f04, 0x07ffffff, 0x06ba27e6
+    },
   },
   { { /* intensityScale on, mid-side off */
       0x40000000, 0x2d413ccc, 0x20000000, 0x16a09e66, 0x10000000, 0x0b504f33, 0x08000000, 0x05a82799,
-      0x04000000, 0x02d413cc, 0x02000000, 0x016a09e6, 0x01000000, 0x00b504f3, 0x00800000, 0x005a8279 },
+      0x04000000, 0x02d413cc, 0x02000000, 0x016a09e6, 0x01000000, 0x00b504f3, 0x00800000, 0x005a8279
+    },
     { /* intensityScale on, mid-side on */
       0x5a827999, 0x3fffffff, 0x2d413ccc, 0x1fffffff, 0x16a09e66, 0x0fffffff, 0x0b504f33, 0x07ffffff,
-      0x05a82799, 0x03ffffff, 0x02d413cc, 0x01ffffff, 0x016a09e6, 0x00ffffff, 0x00b504f3, 0x007fffff } }
+      0x05a82799, 0x03ffffff, 0x02d413cc, 0x01ffffff, 0x016a09e6, 0x00ffffff, 0x00b504f3, 0x007fffff
+    }
+  }
 };
 
 const uint32_t m_COS0_0 = 0x4013c251;  /* Q31 */
@@ -5000,7 +5009,7 @@ const uint32_t m_dcttab[48] PROGMEM = {
   m_COS0_5, m_COS0_10, m_COS1_5,  /* 31, 31, 30 */
   m_COS0_6, m_COS0_9, m_COS1_6,   /* 31, 31, 30 */
   m_COS0_7, m_COS0_8, m_COS1_7,   /* 31, 31, 28 */
-                                  /* second pass */
+  /* second pass */
   m_COS2_0, m_COS2_3, m_COS3_0,   /* 31, 29, 31 */
   m_COS2_1, m_COS2_2, m_COS3_1,   /* 31, 31, 30 */
   -m_COS2_0, -m_COS2_3, m_COS3_0, /* 31, 29, 31 */
@@ -5012,7 +5021,7 @@ const uint32_t m_dcttab[48] PROGMEM = {
 };
 
 /***********************************************************************************************************************
- * B I T S T R E A M
+   B I T S T R E A M
  **********************************************************************************************************************/
 
 void SetBitstreamPointer(BitStreamInfo_t *bsi, int nBytes, unsigned char *buf) {
@@ -5107,10 +5116,10 @@ int UnpackFrameHeader(unsigned char *buf) {
   m_MP3DecInfo->layer = m_FrameHeader->layer;
 
   /* get bitrate and nSlots from table, unless brIdx == 0 (free mode) in which case caller must figure it out himself
-     * question - do we want to overwrite mp3DecInfo->bitrate with 0 each time if it's free mode, and
-     *  copy the pre-calculated actual free bitrate into it in mp3dec.c (according to the spec,
-     *  this shouldn't be necessary, since it should be either all frames free or none free)
-     */
+       question - do we want to overwrite mp3DecInfo->bitrate with 0 each time if it's free mode, and
+        copy the pre-calculated actual free bitrate into it in mp3dec.c (according to the spec,
+        this shouldn't be necessary, since it should be either all frames free or none free)
+  */
   if (m_FrameHeader->brIdx) {
     m_MP3DecInfo->bitrate = ((int)bitrateTab[m_MPEGVersion][m_FrameHeader->layer - 1][m_FrameHeader->brIdx]) * 1000;
     /* nSlots = total frame bytes (from table) - sideInfo bytes - header - CRC (if present) + pad (if present) */
@@ -5201,27 +5210,27 @@ int UnpackSideInfo(unsigned char *buf) {
   return nBytes;
 }
 /***********************************************************************************************************************
- * Function:    UnpackSFMPEG1
- *
- * Description: unpack MPEG 1 scalefactors from bitstream
- *
- * Inputs:      BitStreamInfo, SideInfoSub, ScaleFactorInfoSub structs for this
- *                granule/channel
- *              vector of scfsi flags from side info, length = 4 (MAX_SCFBD)
- *              index of current granule
- *              ScaleFactorInfoSub from granule 0 (for granule 1, if scfsi[i] is set,
- *                then we just replicate the scale factors from granule 0 in the
- *                i'th set of scalefactor bands)
- *
- * Outputs:     updated BitStreamInfo struct
- *              scalefactors in sfis (short and/or long arrays, as appropriate)
- *
- * Return:      none
- *
- * Notes:       set order of short blocks to s[band][window] instead of s[window][band]
- *                so that we index through consectutive memory locations when unpacking
- *                (make sure dequantizer follows same convention)
- *              Illegal Intensity Position = 7 (always) for MPEG1 scale factors
+   Function:    UnpackSFMPEG1
+
+   Description: unpack MPEG 1 scalefactors from bitstream
+
+   Inputs:      BitStreamInfo, SideInfoSub, ScaleFactorInfoSub structs for this
+                  granule/channel
+                vector of scfsi flags from side info, length = 4 (MAX_SCFBD)
+                index of current granule
+                ScaleFactorInfoSub from granule 0 (for granule 1, if scfsi[i] is set,
+                  then we just replicate the scale factors from granule 0 in the
+                  i'th set of scalefactor bands)
+
+   Outputs:     updated BitStreamInfo struct
+                scalefactors in sfis (short and/or long arrays, as appropriate)
+
+   Return:      none
+
+   Notes:       set order of short blocks to s[band][window] instead of s[window][band]
+                  so that we index through consectutive memory locations when unpacking
+                  (make sure dequantizer follows same convention)
+                Illegal Intensity Position = 7 (always) for MPEG1 scale factors
  **********************************************************************************************************************/
 void UnpackSFMPEG1(BitStreamInfo_t *bsi, SideInfoSub_t *sis,
                    ScaleFactorInfoSub_t *sfis, int *scfsi, int gr, ScaleFactorInfoSub_t *sfisGr0) {
@@ -5264,10 +5273,10 @@ void UnpackSFMPEG1(BitStreamInfo_t *bsi, SideInfoSub_t *sis,
       return;
     } else {
       /* second granule
-             * scfsi: 0 = different scalefactors for each granule,
-             *        1 = copy sf's from granule 0 into granule 1
-             * for block type == 2, scfsi is always 0
-             */
+               scfsi: 0 = different scalefactors for each granule,
+                      1 = copy sf's from granule 0 into granule 1
+               for block type == 2, scfsi is always 0
+      */
       sfb = 0;
       if (scfsi[0])
         for (; sfb < 6; sfb++) sfis->l[sfb] = sfisGr0->l[sfb];
@@ -5292,24 +5301,24 @@ void UnpackSFMPEG1(BitStreamInfo_t *bsi, SideInfoSub_t *sis,
   }
 }
 /***********************************************************************************************************************
- * Function:    UnpackSFMPEG2
- *
- * Description: unpack MPEG 2 scalefactors from bitstream
- *
- * Inputs:      BitStreamInfo, SideInfoSub, ScaleFactorInfoSub structs for this
- *                granule/channel
- *              index of current granule and channel
- *              ScaleFactorInfoSub from this granule
- *              modeExt field from frame header, to tell whether intensity stereo is on
- *              ScaleFactorJS struct for storing IIP info used in Dequant()
- *
- * Outputs:     updated BitStreamInfo struct
- *              scalefactors in sfis (short and/or long arrays, as appropriate)
- *              updated intensityScale and preFlag flags
- *
- * Return:      none
- *
- * Notes:       Illegal Intensity Position = (2^slen) - 1 for MPEG2 scale factors
+   Function:    UnpackSFMPEG2
+
+   Description: unpack MPEG 2 scalefactors from bitstream
+
+   Inputs:      BitStreamInfo, SideInfoSub, ScaleFactorInfoSub structs for this
+                  granule/channel
+                index of current granule and channel
+                ScaleFactorInfoSub from this granule
+                modeExt field from frame header, to tell whether intensity stereo is on
+                ScaleFactorJS struct for storing IIP info used in Dequant()
+
+   Outputs:     updated BitStreamInfo struct
+                scalefactors in sfis (short and/or long arrays, as appropriate)
+                updated intensityScale and preFlag flags
+
+   Return:      none
+
+   Notes:       Illegal Intensity Position = (2^slen) - 1 for MPEG2 scale factors
  **********************************************************************************************************************/
 void UnpackSFMPEG2(BitStreamInfo_t *bsi, SideInfoSub_t *sis,
                    ScaleFactorInfoSub_t *sfis, int gr, int ch, int modeExt, ScaleFactorJS_t *sfjs) {
@@ -5440,20 +5449,20 @@ void UnpackSFMPEG2(BitStreamInfo_t *bsi, SideInfoSub_t *sis,
   }
 }
 /***********************************************************************************************************************
- * Function:    UnpackScaleFactors
- *
- * Description: parse the fields of the MP3 scale factor data section
- *
- * Inputs:      MP3DecInfo structure filled by UnpackFrameHeader() and UnpackSideInfo()
- *              buffer pointing to the MP3 scale factor data
- *              pointer to bit offset (0-7) indicating starting bit in buf[0]
- *              number of bits available in data buffer
- *              index of current granule and channel
- *
- * Outputs:     updated platform-specific ScaleFactorInfo struct
- *              updated bitOffset
- *
- * Return:      length (in bytes) of scale factor data, -1 if null input pointers
+   Function:    UnpackScaleFactors
+
+   Description: parse the fields of the MP3 scale factor data section
+
+   Inputs:      MP3DecInfo structure filled by UnpackFrameHeader() and UnpackSideInfo()
+                buffer pointing to the MP3 scale factor data
+                pointer to bit offset (0-7) indicating starting bit in buf[0]
+                number of bits available in data buffer
+                index of current granule and channel
+
+   Outputs:     updated platform-specific ScaleFactorInfo struct
+                updated bitOffset
+
+   Return:      length (in bytes) of scale factor data, -1 if null input pointers
  **********************************************************************************************************************/
 int UnpackScaleFactors(unsigned char *buf, int *bitOffset, int bitsAvail, int gr, int ch) {
   int bitsUsed;
@@ -5483,21 +5492,21 @@ int UnpackScaleFactors(unsigned char *buf, int *bitOffset, int bitsAvail, int gr
   return (buf - startBuf);
 }
 /***********************************************************************************************************************
- * M P 3 D E C
+   M P 3 D E C
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    MP3FindSyncWord
- *
- * Description: locate the next byte-alinged sync word in the raw mp3 stream
- *
- * Inputs:      buffer to search for sync word
- *              max number of bytes to search in buffer
- *
- * Outputs:     none
- *
- * Return:      offset to first sync word (bytes from start of buf)
- *              -1 if sync not found after searching nBytes
+   Function:    MP3FindSyncWord
+
+   Description: locate the next byte-alinged sync word in the raw mp3 stream
+
+   Inputs:      buffer to search for sync word
+                max number of bytes to search in buffer
+
+   Outputs:     none
+
+   Return:      offset to first sync word (bytes from start of buf)
+                -1 if sync not found after searching nBytes
  **********************************************************************************************************************/
 int MP3FindSyncWord(unsigned char *buf, int nBytes) {
   int i;
@@ -5512,38 +5521,38 @@ int MP3FindSyncWord(unsigned char *buf, int nBytes) {
   return -1;
 }
 /***********************************************************************************************************************
- * Function:    MP3FindFreeSync
- *
- * Description: figure out number of bytes between adjacent sync words in "free" mode
- *
- * Inputs:      buffer to search for next sync word
- *              the 4-byte frame header starting at the current sync word
- *              max number of bytes to search in buffer
- *
- * Outputs:     none
- *
- * Return:      offset to next sync word, minus any pad byte (i.e. nSlots)
- *              -1 if sync not found after searching nBytes
- *
- * Notes:       this checks that the first 22 bits of the next frame header are the
- *                same as the current frame header, but it's still not foolproof
- *                (could accidentally find a sequence in the bitstream which
- *                 appears to match but is not actually the next frame header)
- *              this could be made more error-resilient by checking several frames
- *                in a row and verifying that nSlots is the same in each case
- *              since free mode requires CBR (see spec) we generally only call
- *                this function once (first frame) then store the result (nSlots)
- *                and just use it from then on
+   Function:    MP3FindFreeSync
+
+   Description: figure out number of bytes between adjacent sync words in "free" mode
+
+   Inputs:      buffer to search for next sync word
+                the 4-byte frame header starting at the current sync word
+                max number of bytes to search in buffer
+
+   Outputs:     none
+
+   Return:      offset to next sync word, minus any pad byte (i.e. nSlots)
+                -1 if sync not found after searching nBytes
+
+   Notes:       this checks that the first 22 bits of the next frame header are the
+                  same as the current frame header, but it's still not foolproof
+                  (could accidentally find a sequence in the bitstream which
+                   appears to match but is not actually the next frame header)
+                this could be made more error-resilient by checking several frames
+                  in a row and verifying that nSlots is the same in each case
+                since free mode requires CBR (see spec) we generally only call
+                  this function once (first frame) then store the result (nSlots)
+                  and just use it from then on
  **********************************************************************************************************************/
 int MP3FindFreeSync(unsigned char *buf, unsigned char firstFH[4], int nBytes) {
   int offset = 0;
   unsigned char *bufPtr = buf;
 
   /* loop until we either:
-     *  - run out of nBytes (FindMP3SyncWord() returns -1)
-     *  - find the next valid frame header (sync word, version, layer, CRC flag, bitrate, and sample rate
-     *      in next header must match current header)
-     */
+        - run out of nBytes (FindMP3SyncWord() returns -1)
+        - find the next valid frame header (sync word, version, layer, CRC flag, bitrate, and sample rate
+            in next header must match current header)
+  */
   while (1) {
     offset = MP3FindSyncWord(bufPtr, nBytes);
     bufPtr += offset;
@@ -5552,7 +5561,7 @@ int MP3FindFreeSync(unsigned char *buf, unsigned char firstFH[4], int nBytes) {
     } else if ((bufPtr[0] == firstFH[0]) && (bufPtr[1] == firstFH[1])
                && ((bufPtr[2] & 0xfc) == (firstFH[2] & 0xfc))) {
       /* want to return number of bytes per frame,
-             * NOT counting the padding byte, so subtract one if padFlag == 1 */
+               NOT counting the padding byte, so subtract one if padFlag == 1 */
       if ((firstFH[2] >> 1) & 0x01)
         bufPtr--;
       return bufPtr - buf;
@@ -5564,18 +5573,18 @@ int MP3FindFreeSync(unsigned char *buf, unsigned char firstFH[4], int nBytes) {
   return -1;
 }
 /***********************************************************************************************************************
- * Function:    MP3GetLastFrameInfo
- *
- * Description: get info about last MP3 frame decoded (number of sampled decoded,
- *                sample rate, bitrate, etc.)
- *
- * Inputs:
- *
- * Outputs:     filled-in MP3FrameInfo struct
- *
- * Return:      none
- *
- * Notes:       call this right after calling MP3Decode
+   Function:    MP3GetLastFrameInfo
+
+   Description: get info about last MP3 frame decoded (number of sampled decoded,
+                  sample rate, bitrate, etc.)
+
+   Inputs:
+
+   Outputs:     filled-in MP3FrameInfo struct
+
+   Return:      none
+
+   Notes:       call this right after calling MP3Decode
  **********************************************************************************************************************/
 void MP3GetLastFrameInfo() {
   if (m_MP3DecInfo->layer != 3) {
@@ -5613,16 +5622,16 @@ int MP3GetOutputSamps() {
   return m_MP3FrameInfo->outputSamps;
 }
 /***********************************************************************************************************************
- * Function:    MP3GetNextFrameInfo
- *
- * Description: parse MP3 frame header
- *
- * Inputs:        pointer to buffer containing valid MP3 frame header (located using
- *                MP3FindSyncWord(), above)
- *
- * Outputs:     filled-in MP3FrameInfo struct
- *
- * Return:      error code, defined in mp3dec.h (0 means no error, < 0 means error)
+   Function:    MP3GetNextFrameInfo
+
+   Description: parse MP3 frame header
+
+   Inputs:        pointer to buffer containing valid MP3 frame header (located using
+                  MP3FindSyncWord(), above)
+
+   Outputs:     filled-in MP3FrameInfo struct
+
+   Return:      error code, defined in mp3dec.h (0 means no error, < 0 means error)
  **********************************************************************************************************************/
 int MP3GetNextFrameInfo(unsigned char *buf) {
 
@@ -5634,16 +5643,16 @@ int MP3GetNextFrameInfo(unsigned char *buf) {
   return ERR_MP3_NONE;
 }
 /***********************************************************************************************************************
- * Function:    MP3ClearBadFrame
- *
- * Description: zero out pcm buffer if error decoding MP3 frame
- *
- * Inputs:      mp3DecInfo struct with correct frame size parameters filled in
- *              pointer pcm output buffer
- *
- * Outputs:     zeroed out pcm buffer
- *
- * Return:      none
+   Function:    MP3ClearBadFrame
+
+   Description: zero out pcm buffer if error decoding MP3 frame
+
+   Inputs:      mp3DecInfo struct with correct frame size parameters filled in
+                pointer pcm output buffer
+
+   Outputs:     zeroed out pcm buffer
+
+   Return:      none
  **********************************************************************************************************************/
 void MP3ClearBadFrame(short *outbuf) {
   int i;
@@ -5651,23 +5660,23 @@ void MP3ClearBadFrame(short *outbuf) {
     outbuf[i] = 0;
 }
 /***********************************************************************************************************************
- * Function:    MP3Decode
- *
- * Description: decode one frame of MP3 data
- *
- * Inputs:      number of valid bytes remaining in inbuf
- *              pointer to outbuf, big enough to hold one frame of decoded PCM samples
- *              flag indicating whether MP3 data is normal MPEG format (useSize = 0)
- *              or reformatted as "self-contained" frames (useSize = 1)
- *
- * Outputs:     PCM data in outbuf, interleaved LRLRLR... if stereo
- *              number of output samples = nGrans * nGranSamps * nChans
- *              updated inbuf pointer, updated bytesLeft
- *
- * Return:      error code, defined in mp3dec.h (0 means no error, < 0 means error)
- *
- * Notes:       switching useSize on and off between frames in the same stream
- *                is not supported (bit reservoir is not maintained if useSize on)
+   Function:    MP3Decode
+
+   Description: decode one frame of MP3 data
+
+   Inputs:      number of valid bytes remaining in inbuf
+                pointer to outbuf, big enough to hold one frame of decoded PCM samples
+                flag indicating whether MP3 data is normal MPEG format (useSize = 0)
+                or reformatted as "self-contained" frames (useSize = 1)
+
+   Outputs:     PCM data in outbuf, interleaved LRLRLR... if stereo
+                number of output samples = nGrans * nGranSamps * nChans
+                updated inbuf pointer, updated bytesLeft
+
+   Return:      error code, defined in mp3dec.h (0 means no error, < 0 means error)
+
+   Notes:       switching useSize on and off between frames in the same stream
+                  is not supported (bit reservoir is not maintained if useSize on)
  **********************************************************************************************************************/
 int MP3Decode(unsigned char *inbuf, int *bytesLeft, short *outbuf, int useSize) {
   int offset, bitOffset, mainBits, gr, ch, fhBytes, siBytes, freeFrameBytes;
@@ -5707,11 +5716,11 @@ int MP3Decode(unsigned char *inbuf, int *bytesLeft, short *outbuf, int useSize) 
   }
 
   /* useSize != 0 means we're getting reformatted (RTP) packets (see RFC 3119)
-     *  - calling function assembles "self-contained" MP3 frames by shifting any main_data
-     *      from the bit reservoir (in previous frames) to AFTER the sync word and side info
-     *  - calling function should set mainDataBegin to 0, and tell us exactly how large this
-     *      frame is (in bytesLeft)
-     */
+        - calling function assembles "self-contained" MP3 frames by shifting any main_data
+            from the bit reservoir (in previous frames) to AFTER the sync word and side info
+        - calling function should set mainDataBegin to 0, and tell us exactly how large this
+            frame is (in bytesLeft)
+  */
   if (useSize) {
     m_MP3DecInfo->nSlots = *bytesLeft;
     if (m_MP3DecInfo->mainDataBegin != 0 || m_MP3DecInfo->nSlots <= 0) {
@@ -5809,16 +5818,16 @@ int MP3Decode(unsigned char *inbuf, int *bytesLeft, short *outbuf, int useSize) 
 }
 
 /***********************************************************************************************************************
- * Function:    MP3Decoder_ClearBuffer
- *
- * Description: clear all the memory needed for the MP3 decoder
- *
- * Inputs:      none
- *
- * Outputs:     none
- *
- * Return:      none
- *
+   Function:    MP3Decoder_ClearBuffer
+
+   Description: clear all the memory needed for the MP3 decoder
+
+   Inputs:      none
+
+   Outputs:     none
+
+   Return:      none
+
  **********************************************************************************************************************/
 void MP3Decoder_ClearBuffer(void) {
 
@@ -5840,32 +5849,50 @@ void MP3Decoder_ClearBuffer(void) {
   return;
 }
 /***********************************************************************************************************************
- * Function:    MP3Decoder_AllocateBuffers
- *
- * Description: allocate all the memory needed for the MP3 decoder
- *
- * Inputs:      none
- *
- * Outputs:     none
- *
- * Return:      pointer to MP3DecInfo structure (initialized with pointers to all
- *                the internal buffers needed for decoding)
- *
- * Notes:       if one or more mallocs fail, function frees any buffers already
- *                allocated before returning
- *
+   Function:    MP3Decoder_AllocateBuffers
+
+   Description: allocate all the memory needed for the MP3 decoder
+
+   Inputs:      none
+
+   Outputs:     none
+
+   Return:      pointer to MP3DecInfo structure (initialized with pointers to all
+                  the internal buffers needed for decoding)
+
+   Notes:       if one or more mallocs fail, function frees any buffers already
+                  allocated before returning
+
  **********************************************************************************************************************/
 
-bool MP3Decoder_AllocateBuffers(void) {
-  if (!m_MP3DecInfo) { m_MP3DecInfo = (MP3DecInfo_t *)malloc(sizeof(MP3DecInfo_t)); }
-  if (!m_FrameHeader) { m_FrameHeader = (FrameHeader_t *)malloc(sizeof(FrameHeader_t)); }
-  if (!m_SideInfo) { m_SideInfo = (SideInfo_t *)malloc(sizeof(SideInfo_t)); }
-  if (!m_ScaleFactorJS) { m_ScaleFactorJS = (ScaleFactorJS_t *)malloc(sizeof(ScaleFactorJS_t)); }
-  if (!m_HuffmanInfo) { m_HuffmanInfo = (HuffmanInfo_t *)malloc(sizeof(HuffmanInfo_t)); }
-  if (!m_DequantInfo) { m_DequantInfo = (DequantInfo_t *)malloc(sizeof(DequantInfo_t)); }
-  if (!m_IMDCTInfo) { m_IMDCTInfo = (IMDCTInfo_t *)malloc(sizeof(IMDCTInfo_t)); }
-  if (!m_SubbandInfo) { m_SubbandInfo = (SubbandInfo_t *)malloc(sizeof(SubbandInfo_t)); }
-  if (!m_MP3FrameInfo) { m_MP3FrameInfo = (MP3FrameInfo_t *)malloc(sizeof(MP3FrameInfo_t)); }
+bool MP3Decoder_AllocateBuffers(unsigned char* buffer) {
+  if (!m_MP3DecInfo) {
+    m_MP3DecInfo = (MP3DecInfo_t *)(buffer ? buffer : malloc(sizeof(MP3DecInfo_t)));
+  }
+  if (!m_FrameHeader) {
+    m_FrameHeader = (FrameHeader_t *)(buffer ? (m_MP3DecInfo + sizeof(MP3DecInfo_t)) : malloc(sizeof(FrameHeader_t)));
+  }
+  if (!m_SideInfo) {
+    m_SideInfo = (SideInfo_t *)(buffer ? (m_FrameHeader + sizeof(FrameHeader_t)) : malloc(sizeof(SideInfo_t)));
+  }
+  if (!m_ScaleFactorJS) {
+    m_ScaleFactorJS = (ScaleFactorJS_t *)(buffer ? (m_SideInfo + sizeof(SideInfo_t)) : malloc(sizeof(ScaleFactorJS_t)));
+  }
+  if (!m_HuffmanInfo) {
+    m_HuffmanInfo = (HuffmanInfo_t *)(buffer ? (m_ScaleFactorJS + sizeof(ScaleFactorJS_t)) : malloc(sizeof(HuffmanInfo_t)));
+  }
+  if (!m_DequantInfo) {
+    m_DequantInfo = (DequantInfo_t *)(buffer ? (m_HuffmanInfo + sizeof(HuffmanInfo_t)) : malloc(sizeof(DequantInfo_t)));
+  }
+  if (!m_IMDCTInfo) {
+    m_IMDCTInfo = (IMDCTInfo_t *)(buffer ? (m_DequantInfo + sizeof(DequantInfo_t)) : malloc(sizeof(IMDCTInfo_t)));
+  }
+  if (!m_SubbandInfo) {
+    m_SubbandInfo = (SubbandInfo_t *)(buffer ? (m_IMDCTInfo + sizeof(IMDCTInfo_t)) : malloc(sizeof(SubbandInfo_t)));
+  }
+  if (!m_MP3FrameInfo) {
+    m_MP3FrameInfo = (MP3FrameInfo_t *)(buffer ? (m_SubbandInfo + sizeof(SubbandInfo_t)) : malloc(sizeof(MP3FrameInfo_t)));
+  }
 
   if (!m_MP3DecInfo || !m_FrameHeader || !m_SideInfo || !m_ScaleFactorJS || !m_HuffmanInfo || !m_DequantInfo || !m_IMDCTInfo || !m_SubbandInfo || !m_MP3FrameInfo) {
     MP3Decoder_FreeBuffers();
@@ -5875,17 +5902,17 @@ bool MP3Decoder_AllocateBuffers(void) {
   return true;
 }
 /***********************************************************************************************************************
- * Function:    MP3Decoder_FreeBuffers
- *
- * Description: frees all the memory used by the MP3 decoder
- *
- * Inputs:      pointer to initialized MP3DecInfo structure
- *
- * Outputs:     none
- *
- * Return:      none
- *
- * Notes:       safe to call even if some buffers were not allocated
+   Function:    MP3Decoder_FreeBuffers
+
+   Description: frees all the memory used by the MP3 decoder
+
+   Inputs:      pointer to initialized MP3DecInfo structure
+
+   Outputs:     none
+
+   Return:      none
+
+   Notes:       safe to call even if some buffers were not allocated
  **********************************************************************************************************************/
 void MP3Decoder_FreeBuffers() {
   //    uint32_t i = ESP.getFreeHeap();
@@ -5931,28 +5958,28 @@ void MP3Decoder_FreeBuffers() {
 }
 
 /***********************************************************************************************************************
- * H U F F M A N N
+   H U F F M A N N
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    DecodeHuffmanPairs
- *
- * Description: decode 2-way vector Huffman codes in the "bigValues" region of spectrum
- *
- * Inputs:      valid BitStreamInfo struct, pointing to start of pair-wise codes
- *              pointer to xy buffer to received decoded values
- *              number of codewords to decode
- *              index of Huffman table to use
- *              number of bits remaining in bitstream
- *
- * Outputs:     pairs of decoded coefficients in vwxy
- *              updated BitStreamInfo struct
- *
- * Return:      number of bits used, or -1 if out of bits
- *
- * Notes:       assumes that nVals is an even number
- *              si_huff.bit tests every Huffman codeword in every table (though not
- *                necessarily all linBits outputs for x,y > 15)
+   Function:    DecodeHuffmanPairs
+
+   Description: decode 2-way vector Huffman codes in the "bigValues" region of spectrum
+
+   Inputs:      valid BitStreamInfo struct, pointing to start of pair-wise codes
+                pointer to xy buffer to received decoded values
+                number of codewords to decode
+                index of Huffman table to use
+                number of bits remaining in bitstream
+
+   Outputs:     pairs of decoded coefficients in vwxy
+                updated BitStreamInfo struct
+
+   Return:      number of bits used, or -1 if out of bits
+
+   Notes:       assumes that nVals is an even number
+                si_huff.bit tests every Huffman codeword in every table (though not
+                  necessarily all linBits outputs for x,y > 15)
  **********************************************************************************************************************/
 // no improvement with section=data
 int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned char *buf, int bitOffset) {
@@ -5978,10 +6005,18 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
   //    assert(tabIdx >= 0);
   //    assert(tabType != invalidTab);
 
-  if ((nVals & 0x01)) { return -1; }
-  if (!(tabIdx < m_HUFF_PAIRTABS)) { return -1; }
-  if (!(tabIdx >= 0)) { return -1; }
-  if (!(tabType != invalidTab)) { return -1; }
+  if ((nVals & 0x01)) {
+    return -1;
+  }
+  if (!(tabIdx < m_HUFF_PAIRTABS)) {
+    return -1;
+  }
+  if (!(tabIdx >= 0)) {
+    return -1;
+  }
+  if (!(tabType != invalidTab)) {
+    return -1;
+  }
 
 
   /* initially fill cache with any partial byte */
@@ -6038,7 +6073,7 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
 
         x = (int)((((unsigned short)(cw)) >> 4) & 0x000f);
         if (x) {
-          (x) |= ((cache)&0x80000000);
+          (x) |= ((cache) & 0x80000000);
           cache <<= 1;
           cachedBits--;
         }
@@ -6047,7 +6082,7 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
 
         y = (int)((((unsigned short)(cw)) >> 8) & 0x000f);
         if (y) {
-          (y) |= ((cache)&0x80000000);
+          (y) |= ((cache) & 0x80000000);
           cache <<= 1;
           cachedBits--;
         }
@@ -6126,7 +6161,7 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
           cache <<= linBits;
         }
         if (x) {
-          (x) |= ((cache)&0x80000000);
+          (x) |= ((cache) & 0x80000000);
           cache <<= 1;
           cachedBits--;
         }
@@ -6150,7 +6185,7 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
           cache <<= linBits;
         }
         if (y) {
-          (y) |= ((cache)&0x80000000);
+          (y) |= ((cache) & 0x80000000);
           cache <<= 1;
           cachedBits--;
         }
@@ -6174,23 +6209,23 @@ int DecodeHuffmanPairs(int *xy, int nVals, int tabIdx, int bitsLeft, unsigned ch
 }
 
 /***********************************************************************************************************************
- * Function:    DecodeHuffmanQuads
- *
- * Description: decode 4-way vector Huffman codes in the "count1" region of spectrum
- *
- * Inputs:      valid BitStreamInfo struct, pointing to start of quadword codes
- *              pointer to vwxy buffer to received decoded values
- *              maximum number of codewords to decode
- *              index of quadword table (0 = table A, 1 = table B)
- *              number of bits remaining in bitstream
- *
- * Outputs:     quadruples of decoded coefficients in vwxy
- *              updated BitStreamInfo struct
- *
- * Return:      index of the first "zero_part" value (index of the first sample
- *                of the quad word after which all samples are 0)
- *
- * Notes:        si_huff.bit tests every vwxy output in both quad tables
+   Function:    DecodeHuffmanQuads
+
+   Description: decode 4-way vector Huffman codes in the "count1" region of spectrum
+
+   Inputs:      valid BitStreamInfo struct, pointing to start of quadword codes
+                pointer to vwxy buffer to received decoded values
+                maximum number of codewords to decode
+                index of quadword table (0 = table A, 1 = table B)
+                number of bits remaining in bitstream
+
+   Outputs:     quadruples of decoded coefficients in vwxy
+                updated BitStreamInfo struct
+
+   Return:      index of the first "zero_part" value (index of the first sample
+                  of the quad word after which all samples are 0)
+
+   Notes:        si_huff.bit tests every vwxy output in both quad tables
  **********************************************************************************************************************/
 // no improvement with section=data
 int DecodeHuffmanQuads(int *vwxy, int nVals, int tabIdx, int bitsLeft, unsigned char *buf, int bitOffset) {
@@ -6241,27 +6276,27 @@ int DecodeHuffmanQuads(int *vwxy, int nVals, int tabIdx, int bitsLeft, unsigned 
 
       v = (int)((((unsigned char)(cw)) >> 3) & 0x01);
       if (v) {
-        (v) |= ((cache)&0x80000000);
+        (v) |= ((cache) & 0x80000000);
         cache <<= 1;
         cachedBits--;
       }
       w = (int)((((unsigned char)(cw)) >> 2) & 0x01);
       if (w) {
-        (w) |= ((cache)&0x80000000);
+        (w) |= ((cache) & 0x80000000);
         cache <<= 1;
         cachedBits--;
       }
 
       x = (int)((((unsigned char)(cw)) >> 1) & 0x01);
       if (x) {
-        (x) |= ((cache)&0x80000000);
+        (x) |= ((cache) & 0x80000000);
         cache <<= 1;
         cachedBits--;
       }
 
       y = (int)((((unsigned char)(cw)) >> 0) & 0x01);
       if (y) {
-        (y) |= ((cache)&0x80000000);
+        (y) |= ((cache) & 0x80000000);
         cache <<= 1;
         cachedBits--;
       }
@@ -6283,26 +6318,26 @@ int DecodeHuffmanQuads(int *vwxy, int nVals, int tabIdx, int bitsLeft, unsigned 
 }
 
 /***********************************************************************************************************************
- * Function:    DecodeHuffman
- *
- * Description: decode one granule, one channel worth of Huffman codes
- *
- * Inputs:      MP3DecInfo structure filled by UnpackFrameHeader(), UnpackSideInfo(),
- *                and UnpackScaleFactors() (for this granule)
- *              buffer pointing to start of Huffman data in MP3 frame
- *              pointer to bit offset (0-7) indicating starting bit in buf[0]
- *              number of bits in the Huffman data section of the frame
- *                (could include padding bits)
- *              index of current granule and channel
- *
- * Outputs:     decoded coefficients in hi->huffDecBuf[ch] (hi pointer in mp3DecInfo)
- *              updated bitOffset
- *
- * Return:      length (in bytes) of Huffman codes
- *              bitOffset also returned in parameter (0 = MSB, 7 = LSB of
- *                byte located at buf + offset)
- *              -1 if null input pointers, huffBlockBits < 0, or decoder runs
- *                out of bits prematurely (invalid bitstream)
+   Function:    DecodeHuffman
+
+   Description: decode one granule, one channel worth of Huffman codes
+
+   Inputs:      MP3DecInfo structure filled by UnpackFrameHeader(), UnpackSideInfo(),
+                  and UnpackScaleFactors() (for this granule)
+                buffer pointing to start of Huffman data in MP3 frame
+                pointer to bit offset (0-7) indicating starting bit in buf[0]
+                number of bits in the Huffman data section of the frame
+                  (could include padding bits)
+                index of current granule and channel
+
+   Outputs:     decoded coefficients in hi->huffDecBuf[ch] (hi pointer in mp3DecInfo)
+                updated bitOffset
+
+   Return:      length (in bytes) of Huffman codes
+                bitOffset also returned in parameter (0 = MSB, 7 = LSB of
+                  byte located at buf + offset)
+                -1 if null input pointers, huffBlockBits < 0, or decoder runs
+                  out of bits prematurely (invalid bitstream)
  **********************************************************************************************************************/
 // .data about 1ms faster per frame
 int DecodeHuffman(unsigned char *buf, int *bitOffset, int huffBlockBits, int gr, int ch) {
@@ -6363,16 +6398,16 @@ int DecodeHuffman(unsigned char *buf, int *bitOffset, int huffBlockBits, int gr,
 
   /* decode Huffman quads (if any) */
   m_HuffmanInfo->nonZeroBound[ch] += DecodeHuffmanQuads(m_HuffmanInfo->huffDecBuf[ch] + rEnd[3],
-                                                        m_MAX_NSAMP - rEnd[3], sis->count1TableSelect, bitsLeft, buf,
-                                                        *bitOffset);
+                                     m_MAX_NSAMP - rEnd[3], sis->count1TableSelect, bitsLeft, buf,
+                                     *bitOffset);
 
   assert(m_HuffmanInfo->nonZeroBound[ch] <= m_MAX_NSAMP);
   for (i = m_HuffmanInfo->nonZeroBound[ch]; i < m_MAX_NSAMP; i++)
     m_HuffmanInfo->huffDecBuf[ch][i] = 0;
 
   /* If bits used for 576 samples < huffBlockBits, then the extras are considered
-     *  to be stuffing bits (throw away, but need to return correct bitstream position)
-     */
+        to be stuffing bits (throw away, but need to return correct bitstream position)
+  */
   buf += (bitsLeft + *bitOffset) >> 3;
   *bitOffset = (bitsLeft + *bitOffset) & 0x07;
 
@@ -6380,31 +6415,31 @@ int DecodeHuffman(unsigned char *buf, int *bitOffset, int huffBlockBits, int gr,
 }
 
 /***********************************************************************************************************************
- * D E Q U A N T
+   D E Q U A N T
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    MP3Dequantize
- *
- * Description: dequantize coefficients, decode stereo, reorder short blocks
- *                (one granule-worth)
- *
- * Inputs:      index of current granule
- *
- * Outputs:     dequantized and reordered coefficients in hi->huffDecBuf
- *                (one granule-worth, all channels), format = Q26
- *              operates in-place on huffDecBuf but also needs di->workBuf
- *              updated hi->nonZeroBound index for both channels
- *
- * Return:      0 on success, -1 if null input pointers
- *
- * Notes:       In calling output Q(DQ_FRACBITS_OUT), we assume an implicit bias
- *                of 2^15. Some (floating-point) reference implementations factor this
- *                into the 2^(0.25 * gain) scaling explicitly. But to avoid precision
- *                loss, we don't do that. Instead take it into account in the final
- *                round to PCM (>> by 15 less than we otherwise would have).
- *              Equivalently, we can think of the dequantized coefficients as
- *                Q(DQ_FRACBITS_OUT - 15) with no implicit bias.
+   Function:    MP3Dequantize
+
+   Description: dequantize coefficients, decode stereo, reorder short blocks
+                  (one granule-worth)
+
+   Inputs:      index of current granule
+
+   Outputs:     dequantized and reordered coefficients in hi->huffDecBuf
+                  (one granule-worth, all channels), format = Q26
+                operates in-place on huffDecBuf but also needs di->workBuf
+                updated hi->nonZeroBound index for both channels
+
+   Return:      0 on success, -1 if null input pointers
+
+   Notes:       In calling output Q(DQ_FRACBITS_OUT), we assume an implicit bias
+                  of 2^15. Some (floating-point) reference implementations factor this
+                  into the 2^(0.25 * gain) scaling explicitly. But to avoid precision
+                  loss, we don't do that. Instead take it into account in the final
+                  round to PCM (>> by 15 less than we otherwise would have).
+                Equivalently, we can think of the dequantized coefficients as
+                  Q(DQ_FRACBITS_OUT - 15) with no implicit bias.
  **********************************************************************************************************************/
 int MP3Dequantize(int gr) {
   int i, ch, nSamps, mOut[2];
@@ -6419,10 +6454,10 @@ int MP3Dequantize(int gr) {
   }
 
   /* joint stereo processing assumes one guard bit in input samples
-     * it's extremely rare not to have at least one gb, so if this is the case
-     *   just make a pass over the data and clip to [-2^30+1, 2^30-1]
-     * in practice this may never happen
-     */
+       it's extremely rare not to have at least one gb, so if this is the case
+         just make a pass over the data and clip to [-2^30+1, 2^30-1]
+       in practice this may never happen
+  */
   if (m_FrameHeader->modeExt && (m_HuffmanInfo->gb[0] < 1 || m_HuffmanInfo->gb[1] < 1)) {
     for (i = 0; i < m_HuffmanInfo->nonZeroBound[0]; i++) {
       if (m_HuffmanInfo->huffDecBuf[0][i] < -0x3fffffff) m_HuffmanInfo->huffDecBuf[0][i] = -0x3fffffff;
@@ -6475,22 +6510,22 @@ int MP3Dequantize(int gr) {
 }
 
 /***********************************************************************************************************************
- * D Q C H A N
+   D Q C H A N
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    DequantBlock
- *
- * Description: Ken's highly-optimized, low memory dequantizer performing the operation
- *              y = pow(x, 4.0/3.0) * pow(2, 25 - scale/4.0)
- *
- * Inputs:      input buffer of decode Huffman codewords (signed-magnitude)
- *              output buffer of same length (in-place (outbuf = inbuf) is allowed)
- *              number of samples
- *
- * Outputs:     dequantized samples in Q25 format
- *
- * Return:      bitwise-OR of the unsigned outputs (for guard bit calculations)
+   Function:    DequantBlock
+
+   Description: Ken's highly-optimized, low memory dequantizer performing the operation
+                y = pow(x, 4.0/3.0) * pow(2, 25 - scale/4.0)
+
+   Inputs:      input buffer of decode Huffman codewords (signed-magnitude)
+                output buffer of same length (in-place (outbuf = inbuf) is allowed)
+                number of samples
+
+   Outputs:     dequantized samples in Q25 format
+
+   Return:      bitwise-OR of the unsigned outputs (for guard bit calculations)
  **********************************************************************************************************************/
 int DequantBlock(int *inbuf, int *outbuf, int num, int scale) {
   int tab4[4];
@@ -6576,24 +6611,24 @@ int DequantBlock(int *inbuf, int *outbuf, int num, int scale) {
 }
 
 /***********************************************************************************************************************
- * Function:    DequantChannel
- *
- * Description: dequantize one granule, one channel worth of decoded Huffman codewords
- *
- * Inputs:      sample buffer (decoded Huffman codewords), length = m_MAX_NSAMP samples
- *              work buffer for reordering short-block, length = m_MAX_REORDER_SAMPS
- *                samples (3 * width of largest short-block critical band)
- *              non-zero bound for this channel/granule
- *              valid FrameHeader, SideInfoSub, ScaleFactorInfoSub, and CriticalBandInfo
- *                structures for this channel/granule
- *
- * Outputs:     MAX_NSAMP dequantized samples in sampleBuf
- *              updated non-zero bound (indicating which samples are != 0 after DQ)
- *              filled-in cbi structure indicating start and end critical bands
- *
- * Return:      minimum number of guard bits in dequantized sampleBuf
- *
- * Notes:       dequantized samples in Q(DQ_FRACBITS_OUT) format
+   Function:    DequantChannel
+
+   Description: dequantize one granule, one channel worth of decoded Huffman codewords
+
+   Inputs:      sample buffer (decoded Huffman codewords), length = m_MAX_NSAMP samples
+                work buffer for reordering short-block, length = m_MAX_REORDER_SAMPS
+                  samples (3 * width of largest short-block critical band)
+                non-zero bound for this channel/granule
+                valid FrameHeader, SideInfoSub, ScaleFactorInfoSub, and CriticalBandInfo
+                  structures for this channel/granule
+
+   Outputs:     MAX_NSAMP dequantized samples in sampleBuf
+                updated non-zero bound (indicating which samples are != 0 after DQ)
+                filled-in cbi structure indicating start and end critical bands
+
+   Return:      minimum number of guard bits in dequantized sampleBuf
+
+   Notes:       dequantized samples in Q(DQ_FRACBITS_OUT) format
  **********************************************************************************************************************/
 int DequantChannel(int *sampleBuf, int *workBuf, int *nonZeroBound, SideInfoSub_t *sis, ScaleFactorInfoSub_t *sfis,
                    CriticalBandInfo_t *cbi) {
@@ -6628,15 +6663,15 @@ int DequantChannel(int *sampleBuf, int *workBuf, int *nonZeroBound, SideInfoSub_
   i = 0;
 
   /* sfactScale = 0 --> quantizer step size = 2
-     * sfactScale = 1 --> quantizer step size = sqrt(2)
-     *   so sfactMultiplier = 2 or 4 (jump through globalGain by powers of 2 or sqrt(2))
-     */
+       sfactScale = 1 --> quantizer step size = sqrt(2)
+         so sfactMultiplier = 2 or 4 (jump through globalGain by powers of 2 or sqrt(2))
+  */
   sfactMultiplier = 2 * (sis->sfactScale + 1);
 
   /* offset globalGain by -2 if midSide enabled, for 1/sqrt(2) used in MidSideProc()
-     *  (DequantBlock() does 0.25 * gainI so knocking it down by two is the same as
-     *   dividing every sample by sqrt(2) = multiplying by 2^-.5)
-     */
+        (DequantBlock() does 0.25 * gainI so knocking it down by two is the same as
+         dividing every sample by sqrt(2) = multiplying by 2^-.5)
+  */
   globalGain = sis->globalGain;
   if (m_FrameHeader->modeExt >> 1)
     globalGain -= 2;
@@ -6704,12 +6739,12 @@ int DequantChannel(int *sampleBuf, int *workBuf, int *nonZeroBound, SideInfoSub_
   }
 
   /* i = last non-zero INPUT sample processed, which corresponds to highest possible non-zero
-     *     OUTPUT sample (after reorder)
-     * however, the original nzb is no longer necessarily true
-     *   for each cb, buf[][] is updated with 3*nSamps samples (i increases 3*nSamps each time)
-     *   (buf[j + 1][0] = 3 (input) samples ahead of buf[j][0])
-     * so update nonZeroBound to i
-     */
+           OUTPUT sample (after reorder)
+       however, the original nzb is no longer necessarily true
+         for each cb, buf[][] is updated with 3*nSamps samples (i increases 3*nSamps each time)
+         (buf[j + 1][0] = 3 (input) samples ahead of buf[j][0])
+       so update nonZeroBound to i
+  */
   *nonZeroBound = i;
 
   assert(*nonZeroBound <= m_MAX_NSAMP);
@@ -6728,32 +6763,32 @@ int DequantChannel(int *sampleBuf, int *workBuf, int *nonZeroBound, SideInfoSub_
 }
 
 /***********************************************************************************************************************
- * S T P R O C
+   S T P R O C
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    MidSideProc
- *
- * Description: sum-difference stereo reconstruction
- *
- * Inputs:      vector x with dequantized samples from left and right channels
- *              number of non-zero samples (MAX of left and right)
- *              assume 1 guard bit in input
- *              guard bit mask (left and right channels)
- *
- * Outputs:     updated sample vector x
- *              updated guard bit mask
- *
- * Return:      none
- *
- * Notes:       assume at least 1 GB in input
+   Function:    MidSideProc
+
+   Description: sum-difference stereo reconstruction
+
+   Inputs:      vector x with dequantized samples from left and right channels
+                number of non-zero samples (MAX of left and right)
+                assume 1 guard bit in input
+                guard bit mask (left and right channels)
+
+   Outputs:     updated sample vector x
+                updated guard bit mask
+
+   Return:      none
+
+   Notes:       assume at least 1 GB in input
  **********************************************************************************************************************/
 void MidSideProc(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps, int mOut[2]) {
   int i, xr, xl, mOutL, mOutR;
 
   /* L = (M+S)/sqrt(2), R = (M-S)/sqrt(2)
-     * NOTE: 1/sqrt(2) done in DequantChannel() - see comments there
-     */
+       NOTE: 1/sqrt(2) done in DequantChannel() - see comments there
+  */
   mOutL = mOutR = 0;
   for (i = 0; i < nSamps; i++) {
     xl = x[0][i];
@@ -6768,24 +6803,24 @@ void MidSideProc(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps, int mOut[2]) {
 }
 
 /***********************************************************************************************************************
- * Function:    IntensityProcMPEG1
- *
- * Description: intensity stereo processing for MPEG1
- *
- * Inputs:      vector x with dequantized samples from left and right channels
- *              number of non-zero samples in left channel
- *              valid FrameHeader struct
- *              two each of ScaleFactorInfoSub, CriticalBandInfo structs (both channels)
- *              flags indicating midSide on/off, mixedBlock on/off
- *              guard bit mask (left and right channels)
- *
- * Outputs:     updated sample vector x
- *              updated guard bit mask
- *
- * Return:      none
- *
- * Notes:       assume at least 1 GB in input
- *
+   Function:    IntensityProcMPEG1
+
+   Description: intensity stereo processing for MPEG1
+
+   Inputs:      vector x with dequantized samples from left and right channels
+                number of non-zero samples in left channel
+                valid FrameHeader struct
+                two each of ScaleFactorInfoSub, CriticalBandInfo structs (both channels)
+                flags indicating midSide on/off, mixedBlock on/off
+                guard bit mask (left and right channels)
+
+   Outputs:     updated sample vector x
+                updated guard bit mask
+
+   Return:      none
+
+   Notes:       assume at least 1 GB in input
+
  **********************************************************************************************************************/
 void IntensityProcMPEG1(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps, ScaleFactorInfoSub_t *sfis,
                         CriticalBandInfo_t *cbi, int midSideFlag, int mixFlag, int mOut[2]) {
@@ -6797,9 +6832,9 @@ void IntensityProcMPEG1(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps, ScaleFactor
   (void)mixFlag;
 
   /* NOTE - this works fine for mixed blocks, as long as the switch point starts in the
-     *  short block section (i.e. on or after sample 36 = sfBand->l[8] = 3*sfBand->s[3]
-     * is this a safe assumption?
-     */
+        short block section (i.e. on or after sample 36 = sfBand->l[8] = 3*sfBand->s[3]
+       is this a safe assumption?
+  */
   if (cbi[1].cbType == 0) {
     /* long block */
     cbStartL = cbi[1].cbEndL + 1;
@@ -6880,25 +6915,25 @@ void IntensityProcMPEG1(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps, ScaleFactor
 }
 
 /***********************************************************************************************************************
- * Function:    IntensityProcMPEG2
- *
- * Description: intensity stereo processing for MPEG2
- *
- * Inputs:      vector x with dequantized samples from left and right channels
- *              number of non-zero samples in left channel
- *              valid FrameHeader struct
- *              two each of ScaleFactorInfoSub, CriticalBandInfo structs (both channels)
- *              ScaleFactorJS struct with joint stereo info from UnpackSFMPEG2()
- *              flags indicating midSide on/off, mixedBlock on/off
- *              guard bit mask (left and right channels)
- *
- * Outputs:     updated sample vector x
- *              updated guard bit mask
- *
- * Return:      none
- *
- * Notes:       assume at least 1 GB in input
- *
+   Function:    IntensityProcMPEG2
+
+   Description: intensity stereo processing for MPEG2
+
+   Inputs:      vector x with dequantized samples from left and right channels
+                number of non-zero samples in left channel
+                valid FrameHeader struct
+                two each of ScaleFactorInfoSub, CriticalBandInfo structs (both channels)
+                ScaleFactorJS struct with joint stereo info from UnpackSFMPEG2()
+                flags indicating midSide on/off, mixedBlock on/off
+                guard bit mask (left and right channels)
+
+   Outputs:     updated sample vector x
+                updated guard bit mask
+
+   Return:      none
+
+   Notes:       assume at least 1 GB in input
+
  **********************************************************************************************************************/
 void IntensityProcMPEG2(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps,
                         ScaleFactorInfoSub_t *sfis, CriticalBandInfo_t *cbi,
@@ -6995,32 +7030,32 @@ void IntensityProcMPEG2(int x[m_MAX_NCHAN][m_MAX_NSAMP], int nSamps,
 }
 
 /***********************************************************************************************************************
- * I M D C T
+   I M D C T
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    AntiAlias
- *
- * Description: smooth transition across DCT block boundaries (every 18 coefficients)
- *
- * Inputs:      vector of dequantized coefficients, length = (nBfly+1) * 18
- *              number of "butterflies" to perform (one butterfly means one
- *                inter-block smoothing operation)
- *
- * Outputs:     updated coefficient vector x
- *
- * Return:      none
- *
- * Notes:       weighted average of opposite bands (pairwise) from the 8 samples
- *                before and after each block boundary
- *              nBlocks = (nonZeroBound + 7) / 18, since nZB is the first ZERO sample
- *                above which all other samples are also zero
- *              max gain per sample = 1.372
- *                MAX(i) (abs(csa[i][0]) + abs(csa[i][1]))
- *              bits gained = 0
- *              assume at least 1 guard bit in x[] to avoid overflow
- *                (should be guaranteed from dequant, and max gain from stproc * max
- *                 gain from AntiAlias < 2.0)
+   Function:    AntiAlias
+
+   Description: smooth transition across DCT block boundaries (every 18 coefficients)
+
+   Inputs:      vector of dequantized coefficients, length = (nBfly+1) * 18
+                number of "butterflies" to perform (one butterfly means one
+                  inter-block smoothing operation)
+
+   Outputs:     updated coefficient vector x
+
+   Return:      none
+
+   Notes:       weighted average of opposite bands (pairwise) from the 8 samples
+                  before and after each block boundary
+                nBlocks = (nonZeroBound + 7) / 18, since nZB is the first ZERO sample
+                  above which all other samples are also zero
+                max gain per sample = 1.372
+                  MAX(i) (abs(csa[i][0]) + abs(csa[i][1]))
+                bits gained = 0
+                assume at least 1 guard bit in x[] to avoid overflow
+                  (should be guaranteed from dequant, and max gain from stproc * max
+                   gain from AntiAlias < 2.0)
  **********************************************************************************************************************/
 // a little bit faster in RAM (< 1 ms per block)
 /* __attribute__ ((section (".data"))) */
@@ -7107,20 +7142,20 @@ void AntiAlias(int *x, int nBfly) {
 }
 
 /***********************************************************************************************************************
- * Function:    WinPrevious
- *
- * Description: apply specified window to second half of previous IMDCT (overlap part)
- *
- * Inputs:      vector of 9 coefficients (xPrev)
- *
- * Outputs:     18 windowed output coefficients (gain 1 integer bit)
- *              window type (0, 1, 2, 3)
- *
- * Return:      none
- *
- * Notes:       produces 9 output samples from 18 input samples via symmetry
- *              all blocks gain at least 1 guard bit via window (long blocks get extra
- *                sign bit, short blocks can have one addition but max gain < 1.0)
+   Function:    WinPrevious
+
+   Description: apply specified window to second half of previous IMDCT (overlap part)
+
+   Inputs:      vector of 9 coefficients (xPrev)
+
+   Outputs:     18 windowed output coefficients (gain 1 integer bit)
+                window type (0, 1, 2, 3)
+
+   Return:      none
+
+   Notes:       produces 9 output samples from 18 input samples via symmetry
+                all blocks gain at least 1 guard bit via window (long blocks get extra
+                  sign bit, short blocks can have one addition but max gain < 1.0)
  **********************************************************************************************************************/
 
 void WinPrevious(int *xPrev, int *xPrevWin, int btPrev) {
@@ -7151,7 +7186,7 @@ void WinPrevious(int *xPrev, int *xPrevWin, int btPrev) {
     xPrevWin[10] = MULSHIFT32(wpLo[10], xPrev[4]);
     xPrevWin[11] = MULSHIFT32(wpLo[11], xPrev[5]);
     xPrevWin[12] = xPrevWin[13] = xPrevWin[14] = xPrevWin[15] =
-      xPrevWin[16] = xPrevWin[17] = 0;
+                                    xPrevWin[16] = xPrevWin[17] = 0;
   } else {
     /* use ARM-style pointers (*ptr++) so that ADS compiles well */
     wpLo = imdctWin[btPrev] + 18;
@@ -7169,20 +7204,20 @@ void WinPrevious(int *xPrev, int *xPrevWin, int btPrev) {
 }
 
 /***********************************************************************************************************************
- * Function:    FreqInvertRescale
- *
- * Description: do frequency inversion (odd samples of odd blocks) and rescale
- *                if necessary (extra guard bits added before IMDCT)
- *
- * Inputs:      output vector y (18 new samples, spaced NBANDS apart)
- *              previous sample vector xPrev (9 samples)
- *              index of current block
- *              number of extra shifts added before IMDCT (usually 0)
- *
- * Outputs:     inverted and rescaled (as necessary) outputs
- *              rescaled (as necessary) previous samples
- *
- * Return:      updated mOut (from new outputs y)
+   Function:    FreqInvertRescale
+
+   Description: do frequency inversion (odd samples of odd blocks) and rescale
+                  if necessary (extra guard bits added before IMDCT)
+
+   Inputs:      output vector y (18 new samples, spaced NBANDS apart)
+                previous sample vector xPrev (9 samples)
+                index of current block
+                number of extra shifts added before IMDCT (usually 0)
+
+   Outputs:     inverted and rescaled (as necessary) outputs
+                rescaled (as necessary) previous samples
+
+   Return:      updated mOut (from new outputs y)
  **********************************************************************************************************************/
 
 int FreqInvertRescale(int *y, int *xPrev, int blockIdx, int es) {
@@ -7323,33 +7358,33 @@ void idct9(int *x) {
 
 
 /***********************************************************************************************************************
- * Function:    IMDCT36
- *
- * Description: 36-point modified DCT, with windowing and overlap-add (50% overlap)
- *
- * Inputs:      vector of 18 coefficients (N/2 inputs produces N outputs, by symmetry)
- *              overlap part of last IMDCT (9 samples - see output comments)
- *              window type (0,1,2,3) of current and previous block
- *              current block index (for deciding whether to do frequency inversion)
- *              number of guard bits in input vector
- *
- * Outputs:     18 output samples, after windowing and overlap-add with last frame
- *              second half of (unwindowed) 36-point IMDCT - save for next time
- *                only save 9 xPrev samples, using symmetry (see WinPrevious())
- *
- * Notes:       this is Ken's hyper-fast algorithm, including symmetric sin window
- *                optimization, if applicable
- *              total number of multiplies, general case:
- *                2*10 (idct9) + 9 (last stage imdct) + 36 (for windowing) = 65
- *              total number of multiplies, btCurr == 0 && btPrev == 0:
- *                2*10 (idct9) + 9 (last stage imdct) + 18 (for windowing) = 47
- *
- *              blockType == 0 is by far the most common case, so it should be
- *                possible to use the fast path most of the time
- *              this is the fastest known algorithm for performing
- *                long IMDCT + windowing + overlap-add in MP3
- *
- * Return:      mOut (OR of abs(y) for all y calculated here)
+   Function:    IMDCT36
+
+   Description: 36-point modified DCT, with windowing and overlap-add (50% overlap)
+
+   Inputs:      vector of 18 coefficients (N/2 inputs produces N outputs, by symmetry)
+                overlap part of last IMDCT (9 samples - see output comments)
+                window type (0,1,2,3) of current and previous block
+                current block index (for deciding whether to do frequency inversion)
+                number of guard bits in input vector
+
+   Outputs:     18 output samples, after windowing and overlap-add with last frame
+                second half of (unwindowed) 36-point IMDCT - save for next time
+                  only save 9 xPrev samples, using symmetry (see WinPrevious())
+
+   Notes:       this is Ken's hyper-fast algorithm, including symmetric sin window
+                  optimization, if applicable
+                total number of multiplies, general case:
+                  2*10 (idct9) + 9 (last stage imdct) + 36 (for windowing) = 65
+                total number of multiplies, btCurr == 0 && btPrev == 0:
+                  2*10 (idct9) + 9 (last stage imdct) + 18 (for windowing) = 47
+
+                blockType == 0 is by far the most common case, so it should be
+                  possible to use the fast path most of the time
+                this is the fastest known algorithm for performing
+                  long IMDCT + windowing + overlap-add in MP3
+
+   Return:      mOut (OR of abs(y) for all y calculated here)
  **********************************************************************************************************************/
 // barely faster in RAM
 
@@ -7420,8 +7455,8 @@ int IMDCT36(int *xCurr, int *xPrev, int *y, int btCurr, int btPrev, int blockIdx
     }
   } else {
     /* slower method - either prev or curr is using window type != 0 so do full 36-point window
-         * output xPrevWin has at least 3 guard bits (xPrev has 2, gain 1 in WinPrevious)
-         */
+           output xPrevWin has at least 3 guard bits (xPrev has 2, gain 1 in WinPrevious)
+    */
     WinPrevious(xPrev, xPrevWin, btPrev);
 
     wp = imdctWin[btCurr];
@@ -7454,8 +7489,8 @@ int IMDCT36(int *xCurr, int *xPrev, int *y, int btCurr, int btPrev, int blockIdx
 
 
 /* 12-point inverse DCT, used in IMDCT12x3()
- * 4 input guard bits will ensure no overflow
- */
+   4 input guard bits will ensure no overflow
+*/
 void imdct12(int *x, int *out) {
   int a0, a1, a2;
   int x0, x1, x2, x3, x4, x5;
@@ -7514,23 +7549,23 @@ void imdct12(int *x, int *out) {
 }
 
 /***********************************************************************************************************************
- * Function:    IMDCT12x3
- *
- * Description: three 12-point modified DCT's for short blocks, with windowing,
- *                short block concatenation, and overlap-add
- *
- * Inputs:      3 interleaved vectors of 6 samples each
- *                (block0[0], block1[0], block2[0], block0[1], block1[1]....)
- *              overlap part of last IMDCT (9 samples - see output comments)
- *              window type (0,1,2,3) of previous block
- *              current block index (for deciding whether to do frequency inversion)
- *              number of guard bits in input vector
- *
- * Outputs:     updated sample vector x, net gain of 1 integer bit
- *              second half of (unwindowed) IMDCT's - save for next time
- *                only save 9 xPrev samples, using symmetry (see WinPrevious())
- *
- * Return:      mOut (OR of abs(y) for all y calculated here)
+   Function:    IMDCT12x3
+
+   Description: three 12-point modified DCT's for short blocks, with windowing,
+                  short block concatenation, and overlap-add
+
+   Inputs:      3 interleaved vectors of 6 samples each
+                  (block0[0], block1[0], block2[0], block0[1], block1[1]....)
+                overlap part of last IMDCT (9 samples - see output comments)
+                window type (0,1,2,3) of previous block
+                current block index (for deciding whether to do frequency inversion)
+                number of guard bits in input vector
+
+   Outputs:     updated sample vector x, net gain of 1 integer bit
+                second half of (unwindowed) IMDCT's - save for next time
+                  only save 9 xPrev samples, using symmetry (see WinPrevious())
+
+   Return:      mOut (OR of abs(y) for all y calculated here)
  **********************************************************************************************************************/
 // barely faster in RAM
 int IMDCT12x3(int *xCurr, int *xPrev, int *y, int btPrev, int blockIdx, int gb) {
@@ -7557,9 +7592,9 @@ int IMDCT12x3(int *xCurr, int *xPrev, int *y, int btPrev, int blockIdx, int gb) 
   WinPrevious(xPrev, xPrevWin, btPrev);
 
   /* could unroll this for speed, minimum loads (short blocks usually rare, so doesn't make much overall difference)
-     * xPrevWin[i] << 2 still has 1 gb always, max gain of windowed xBuf stuff also < 1.0 and gain the sign bit
-     * so y calculations won't overflow
-     */
+       xPrevWin[i] << 2 still has 1 gb always, max gain of windowed xBuf stuff also < 1.0 and gain the sign bit
+       so y calculations won't overflow
+  */
   wp = imdctWin[2];
   mOut = 0;
   for (i = 0; i < 3; i++) {
@@ -7600,26 +7635,26 @@ int IMDCT12x3(int *xCurr, int *xPrev, int *y, int btPrev, int blockIdx, int gb) 
 }
 
 /***********************************************************************************************************************
- * Function:    HybridTransform
- *
- * Description: IMDCT's, windowing, and overlap-add on long/short/mixed blocks
- *
- * Inputs:      vector of input coefficients, length = nBlocksTotal * 18)
- *              vector of overlap samples from last time, length = nBlocksPrev * 9)
- *              buffer for output samples, length = MAXNSAMP
- *              SideInfoSub struct for this granule/channel
- *              BlockCount struct with necessary info
- *                number of non-zero input and overlap blocks
- *                number of long blocks in input vector (rest assumed to be short blocks)
- *                number of blocks which use long window (type) 0 in case of mixed block
- *                  (bc->currWinSwitch, 0 for non-mixed blocks)
- *
- * Outputs:     transformed, windowed, and overlapped sample buffer
- *              does frequency inversion on odd blocks
- *              updated buffer of samples for overlap
- *
- * Return:      number of non-zero IMDCT blocks calculated in this call
- *                (including overlap-add)
+   Function:    HybridTransform
+
+   Description: IMDCT's, windowing, and overlap-add on long/short/mixed blocks
+
+   Inputs:      vector of input coefficients, length = nBlocksTotal * 18)
+                vector of overlap samples from last time, length = nBlocksPrev * 9)
+                buffer for output samples, length = MAXNSAMP
+                SideInfoSub struct for this granule/channel
+                BlockCount struct with necessary info
+                  number of non-zero input and overlap blocks
+                  number of long blocks in input vector (rest assumed to be short blocks)
+                  number of blocks which use long window (type) 0 in case of mixed block
+                    (bc->currWinSwitch, 0 for non-mixed blocks)
+
+   Outputs:     transformed, windowed, and overlapped sample buffer
+                does frequency inversion on odd blocks
+                updated buffer of samples for overlap
+
+   Return:      number of non-zero IMDCT blocks calculated in this call
+                  (including overlap-add)
  **********************************************************************************************************************/
 int HybridTransform(int *xCurr, int *xPrev, int y[m_BLOCK_SIZE][m_NBANDS], SideInfoSub_t *sis, BlockCount_t *bc) {
   int xPrevWin[18], currWinIdx, prevWinIdx;
@@ -7705,20 +7740,20 @@ int HybridTransform(int *xCurr, int *xPrev, int y[m_BLOCK_SIZE][m_NBANDS], SideI
 }
 
 /***********************************************************************************************************************
- * Function:    IMDCT
- *
- * Description: do alias reduction, inverse MDCT, overlap-add, and frequency inversion
- *
- * Inputs:      MP3DecInfo structure filled by UnpackFrameHeader(), UnpackSideInfo(),
- *                UnpackScaleFactors(), and DecodeHuffman() (for this granule, channel)
- *                includes PCM samples in overBuf (from last call to IMDCT) for OLA
- *              index of current granule and channel
- *
- * Outputs:     PCM samples in outBuf, for input to subband transform
- *              PCM samples in overBuf, for OLA next time
- *              updated hi->nonZeroBound index for this channel
- *
- * Return:      0 on success,  -1 if null input pointers
+   Function:    IMDCT
+
+   Description: do alias reduction, inverse MDCT, overlap-add, and frequency inversion
+
+   Inputs:      MP3DecInfo structure filled by UnpackFrameHeader(), UnpackSideInfo(),
+                  UnpackScaleFactors(), and DecodeHuffman() (for this granule, channel)
+                  includes PCM samples in overBuf (from last call to IMDCT) for OLA
+                index of current granule and channel
+
+   Outputs:     PCM samples in outBuf, for input to subband transform
+                PCM samples in overBuf, for OLA next time
+                updated hi->nonZeroBound index for this channel
+
+   Return:      0 on success,  -1 if null input pointers
  **********************************************************************************************************************/
 // a bit faster in RAM
 /*__attribute__ ((section (".data")))*/
@@ -7728,10 +7763,10 @@ int IMDCT(int gr, int ch) {
 
   /* m_SideInfo is an array of up to 4 structs, stored as gr0ch0, gr0ch1, gr1ch0, gr1ch1 */
   /* anti-aliasing done on whole long blocks only
-     * for mixed blocks, nBfly always 1, except 3 for 8 kHz MPEG 2.5 (see sfBandTab)
-     *   nLongBlocks = number of blocks with (possibly) non-zero power
-     *   nBfly = number of butterflies to do (nLongBlocks - 1, unless no long blocks)
-     */
+       for mixed blocks, nBfly always 1, except 3 for 8 kHz MPEG 2.5 (see sfBandTab)
+         nLongBlocks = number of blocks with (possibly) non-zero power
+         nBfly = number of butterflies to do (nLongBlocks - 1, unless no long blocks)
+  */
   blockCutoff = m_SFBandTable.l[(m_MPEGVersion == MPEG1 ? 8 : 6)] / 18; /* same as 3* num short sfb's in spec */
   if (m_SideInfoSub[gr][ch].blockType != 2) {
     /* all long transforms */
@@ -7766,7 +7801,7 @@ int IMDCT(int gr, int ch) {
   bc.gbIn = m_HuffmanInfo->gb[ch];
 
   m_IMDCTInfo->numPrevIMDCT[ch] = HybridTransform(m_HuffmanInfo->huffDecBuf[ch], m_IMDCTInfo->overBuf[ch],
-                                                  m_IMDCTInfo->outBuf[ch], &m_SideInfoSub[gr][ch], &bc);
+                                  m_IMDCTInfo->outBuf[ch], &m_SideInfoSub[gr][ch], &bc);
   m_IMDCTInfo->prevType[ch] = m_SideInfoSub[gr][ch].blockType;
   m_IMDCTInfo->prevWinSwitch[ch] = bc.currWinSwitch; /* 0 means not a mixed block (either all short or all long) */
   m_IMDCTInfo->gb[ch] = bc.gbOut;
@@ -7778,20 +7813,20 @@ int IMDCT(int gr, int ch) {
 }
 
 /***********************************************************************************************************************
- * S U B B A N D
+   S U B B A N D
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    Subband
- *
- * Description: do subband transform on all the blocks in one granule, all channels
- *
- * Inputs:      filled MP3DecInfo structure, after calling IMDCT for all channels
- *              vbuf[ch] and vindex[ch] must be preserved between calls
- *
- * Outputs:     decoded PCM data, interleaved LRLRLR... if stereo
- *
- * Return:      0 on success,  -1 if null input pointers
+   Function:    Subband
+
+   Description: do subband transform on all the blocks in one granule, all channels
+
+   Inputs:      filled MP3DecInfo structure, after calling IMDCT for all channels
+                vbuf[ch] and vindex[ch] must be preserved between calls
+
+   Outputs:     decoded PCM data, interleaved LRLRLR... if stereo
+
+   Return:      0 on success,  -1 if null input pointers
  **********************************************************************************************************************/
 int Subband(short *pcmBuf) {
   int b;
@@ -7825,32 +7860,32 @@ int Subband(short *pcmBuf) {
 }
 
 /***********************************************************************************************************************
- * D C T 3 2
+   D C T 3 2
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Function:    FDCT32
- *
- * Description: Ken's highly-optimized 32-point DCT (radix-4 + radix-8)
- *
- * Inputs:      input buffer, length = 32 samples
- *              require at least 6 guard bits in input vector x to avoid possibility
- *                of overflow in internal calculations (see bbtest_imdct test app)
- *              buffer offset and oddblock flag for polyphase filter input buffer
- *              number of guard bits in input
- *
- * Outputs:     output buffer, data copied and interleaved for polyphase filter
- *              no guarantees about number of guard bits in output
- *
- * Return:      none
- *
- * Notes:       number of muls = 4*8 + 12*4 = 80
- *              final stage of DCT is hardcoded to shuffle data into the proper order
- *                for the polyphase filterbank
- *              fully unrolled stage 1, for max precision (scale the 1/cos() factors
- *                differently, depending on magnitude)
- *              guard bit analysis verified by exhaustive testing of all 2^32
- *                combinations of max pos/max neg values in x[]
+   Function:    FDCT32
+
+   Description: Ken's highly-optimized 32-point DCT (radix-4 + radix-8)
+
+   Inputs:      input buffer, length = 32 samples
+                require at least 6 guard bits in input vector x to avoid possibility
+                  of overflow in internal calculations (see bbtest_imdct test app)
+                buffer offset and oddblock flag for polyphase filter input buffer
+                number of guard bits in input
+
+   Outputs:     output buffer, data copied and interleaved for polyphase filter
+                no guarantees about number of guard bits in output
+
+   Return:      none
+
+   Notes:       number of muls = 4*8 + 12*4 = 80
+                final stage of DCT is hardcoded to shuffle data into the proper order
+                  for the polyphase filterbank
+                fully unrolled stage 1, for max precision (scale the 1/cos() factors
+                  differently, depending on magnitude)
+                guard bit analysis verified by exhaustive testing of all 2^32
+                  combinations of max pos/max neg values in x[]
  **********************************************************************************************************************/
 #define D32FP(i, s1, s2) \
   { \
@@ -7878,9 +7913,9 @@ void FDCT32(int *buf, int *dest, int offset, int oddBlock, int gb) {
   int *d;
 
   /* scaling - ensure at least 6 guard bits for DCT
-   * (in practice this is already true 99% of time, so this code is
-   *  almost never triggered)
-   */
+     (in practice this is already true 99% of time, so this code is
+      almost never triggered)
+  */
   es = 0;
   if (gb < 6) {
     es = 6 - gb;
@@ -8068,9 +8103,9 @@ void FDCT32(int *buf, int *dest, int offset, int oddBlock, int gb) {
   d[0] = d[8] = s;
 
   /* this is so rarely invoked that it's not worth making two versions of the output
-   *   shuffle code (one for no shift, one for clip + variable shift) like in IMDCT
-   * here we just load, clip, shift, and store on the rare instances that es != 0
-   */
+       shuffle code (one for no shift, one for clip + variable shift) like in IMDCT
+     here we just load, clip, shift, and store on the rare instances that es != 0
+  */
   if (es) {
     d = dest + 64 * 16 + ((offset - oddBlock) & 7) + (oddBlock ? 0 : m_VBUF_LENGTH);
     s = d[0];
@@ -8096,7 +8131,7 @@ void FDCT32(int *buf, int *dest, int offset, int oddBlock, int gb) {
 }
 
 /***********************************************************************************************************************
- * P O L Y P H A S E
+   P O L Y P H A S E
  **********************************************************************************************************************/
 inline short ClipToShort(int x, int fracBits) {
 
@@ -8121,20 +8156,20 @@ inline short ClipToShort(int x, int fracBits) {
 #endif
 }
 /***********************************************************************************************************************
- * Function:    PolyphaseMono
- *
- * Description: filter one subband and produce 32 output PCM samples for one channel
- *
- * Inputs:      pointer to PCM output buffer
- *              number of "extra shifts" (vbuf format = Q(DQ_FRACBITS_OUT-2))
- *              pointer to start of vbuf (preserved from last call)
- *              start of filter coefficient table (in proper, shuffled order)
- *              no minimum number of guard bits is required for input vbuf
- *                (see additional scaling comments below)
- *
- * Outputs:     32 samples of one channel of decoded PCM data, (i.e. Q16.0)
- *
- * Return:      none
+   Function:    PolyphaseMono
+
+   Description: filter one subband and produce 32 output PCM samples for one channel
+
+   Inputs:      pointer to PCM output buffer
+                number of "extra shifts" (vbuf format = Q(DQ_FRACBITS_OUT-2))
+                pointer to start of vbuf (preserved from last call)
+                start of filter coefficient table (in proper, shuffled order)
+                no minimum number of guard bits is required for input vbuf
+                  (see additional scaling comments below)
+
+   Outputs:     32 samples of one channel of decoded PCM data, (i.e. Q16.0)
+
+   Return:      none
  **********************************************************************************************************************/
 void PolyphaseMono(short *pcm, int *vbuf, const uint32_t *coefBase) {
   int i;
@@ -8200,22 +8235,22 @@ void PolyphaseMono(short *pcm, int *vbuf, const uint32_t *coefBase) {
   }
 }
 /***********************************************************************************************************************
- * Function:    PolyphaseStereo
- *
- * Description: filter one subband and produce 32 output PCM samples for each channel
- *
- * Inputs:      pointer to PCM output buffer
- *              number of "extra shifts" (vbuf format = Q(DQ_FRACBITS_OUT-2))
- *              pointer to start of vbuf (preserved from last call)
- *              start of filter coefficient table (in proper, shuffled order)
- *              no minimum number of guard bits is required for input vbuf
- *                (see additional scaling comments below)
- *
- * Outputs:     32 samples of two channels of decoded PCM data, (i.e. Q16.0)
- *
- * Return:      none
- *
- * Notes:       interleaves PCM samples LRLRLR...
+   Function:    PolyphaseStereo
+
+   Description: filter one subband and produce 32 output PCM samples for each channel
+
+   Inputs:      pointer to PCM output buffer
+                number of "extra shifts" (vbuf format = Q(DQ_FRACBITS_OUT-2))
+                pointer to start of vbuf (preserved from last call)
+                start of filter coefficient table (in proper, shuffled order)
+                no minimum number of guard bits is required for input vbuf
+                  (see additional scaling comments below)
+
+   Outputs:     32 samples of two channels of decoded PCM data, (i.e. Q16.0)
+
+   Return:      none
+
+   Notes:       interleaves PCM samples LRLRLR...
  **********************************************************************************************************************/
 void PolyphaseStereo(short *pcm, int *vbuf, const uint32_t *coefBase) {
   int i;
