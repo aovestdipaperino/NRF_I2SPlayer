@@ -1,5 +1,7 @@
 # NRF_I2SPlayer
 
+[![GitHub stars](https://img.shields.io/github/stars/aovestdipaperino/NRF_I2SPlayer?logo=github&color=brightgreen)](https://github.com/aovestdipaperino/NRF_I2SPlayer/stargazers)
+
 First drop of an MP3 decoder and I2S player for nrf52xxx.
 The single file helix MP3 decoder adapted from this: https://github.com/schreibfaul1/ESP32-audioI2S
 
